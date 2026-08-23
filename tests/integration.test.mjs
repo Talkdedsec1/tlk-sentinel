@@ -195,6 +195,36 @@ test("public build strips self artifacts and passes checks", () => {
   assert.equal(pub.detectors.loadPrivateRules, false);
 });
 
+test("a rejected build never overwrites the previous good output", () => {
+  execFileSync(process.execPath, ["scripts/build-public.mjs"], { stdio: "pipe" });
+  const goodProfile = readFileSync("dist-public/profiles/public.json", "utf8");
+  const goodInfo = readFileSync("dist-public/BUILD-INFO.txt", "utf8");
+  assert.equal(JSON.parse(goodProfile).response.autoBan, false);
+
+  const backup = readFileSync("./profiles/public.json", "utf8");
+  const poisoned = JSON.parse(backup);
+  poisoned.response.autoBan = true;
+  writeFileSync("./profiles/public.json", JSON.stringify(poisoned, null, 2));
+
+  let rejected = false;
+  try {
+    execFileSync(process.execPath, ["scripts/build-public.mjs"], { stdio: "pipe" });
+  } catch {
+    rejected = true;
+  } finally {
+    writeFileSync("./profiles/public.json", backup);
+  }
+
+  assert.ok(rejected, "poisoned profile must reject the build");
+  assert.equal(
+    readFileSync("dist-public/profiles/public.json", "utf8"),
+    goodProfile,
+    "rejected build must not leave an unsafe profile in the output",
+  );
+  assert.equal(readFileSync("dist-public/BUILD-INFO.txt", "utf8"), goodInfo);
+  assert.equal(existsSync(".dist-public-stage"), false, "staging dir must be cleaned up");
+});
+
 test("public build is rejected if self profile sneaks in", () => {
   writeFileSync("dist-public-probe-marker", "");
   rmSync("dist-public-probe-marker", { force: true });

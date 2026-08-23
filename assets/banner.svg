@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300" role="img" aria-label="tlk-sentinel — server and application security engine">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a0d14"/>
+      <stop offset="55%" stop-color="#0d1220"/>
+      <stop offset="100%" stop-color="#131a2b"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#5b8cff" stop-opacity="0"/>
+      <stop offset="35%" stop-color="#5b8cff" stop-opacity=".85"/>
+      <stop offset="70%" stop-color="#3ddc97" stop-opacity=".7"/>
+      <stop offset="100%" stop-color="#3ddc97" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="shieldFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e2c49"/>
+      <stop offset="100%" stop-color="#0e1626"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#5b8cff" stop-opacity=".30"/>
+      <stop offset="100%" stop-color="#5b8cff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="34" height="34" patternUnits="userSpaceOnUse">
+      <path d="M34 0H0V34" fill="none" stroke="#5b8cff" stroke-opacity=".07" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="300" rx="18" fill="url(#bg)"/>
+  <rect width="1200" height="300" rx="18" fill="url(#grid)"/>
+  <ellipse cx="980" cy="60" rx="330" ry="200" fill="url(#glow)"/>
+
+  <g transform="translate(74 92)">
+    <path d="M56 0 106 21v37c0 33-21 62-50 74-29-12-50-41-50-74V21z" fill="url(#shieldFill)" stroke="#3a4f7a" stroke-width="2"/>
+    <path d="M35 63l15 15 27-32" fill="none" stroke="#3ddc97" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <text x="216" y="128" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="60" font-weight="700" fill="#e8eef6" letter-spacing="-1">tlk-sentinel</text>
+  <text x="219" y="170" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Inter,sans-serif" font-size="21" fill="#8ea0b8">Server and application security on one event pipeline</text>
+
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="14">
+    <g transform="translate(219 200)">
+      <rect width="152" height="32" rx="16" fill="#16203a" stroke="#2b3c5e"/>
+      <circle cx="19" cy="16" r="4" fill="#3ddc97"/>
+      <text x="32" y="21" fill="#9fb2cc">log detection</text>
+    </g>
+    <g transform="translate(383 200)">
+      <rect width="132" height="32" rx="16" fill="#16203a" stroke="#2b3c5e"/>
+      <circle cx="19" cy="16" r="4" fill="#5b8cff"/>
+      <text x="32" y="21" fill="#9fb2cc">auto-ban</text>
+    </g>
+    <g transform="translate(527 200)">
+      <rect width="150" height="32" rx="16" fill="#16203a" stroke="#2b3c5e"/>
+      <circle cx="19" cy="16" r="4" fill="#ffd43b"/>
+      <text x="32" y="21" fill="#9fb2cc">reputation</text>
+    </g>
+    <g transform="translate(689 200)">
+      <rect width="146" height="32" rx="16" fill="#16203a" stroke="#2b3c5e"/>
+      <circle cx="19" cy="16" r="4" fill="#ff9f45"/>
+      <text x="32" y="21" fill="#9fb2cc">anomaly</text>
+    </g>
+    <g transform="translate(847 200)">
+      <rect width="128" height="32" rx="16" fill="#16203a" stroke="#2b3c5e"/>
+      <circle cx="19" cy="16" r="4" fill="#ff5964"/>
+      <text x="32" y="21" fill="#9fb2cc">live panel</text>
+    </g>
+  </g>
+
+  <text x="1126" y="262" text-anchor="end" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="13" fill="#54637d">made by talkdedsec</text>
+  <rect x="74" y="272" width="1052" height="2" fill="url(#edge)"/>
+</svg>

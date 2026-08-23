@@ -1,103 +1,120 @@
-# tlk-sentinel
+<p align="center">
+  <img src="assets/banner.svg" alt="tlk-sentinel" width="100%">
+</p>
 
-A security engine that unifies the server and application layers on a single event
-pipeline. It tails SSH/nginx logs, catches attack patterns, bans IPs, checks the
-integrity of critical files, and reports to Discord. The same rule engine also runs
-as middleware inside Next/Prisma apps. Zero external dependencies — it runs on Node's
-built-in `node:sqlite` and `node:http`, so a single `npm install` is enough.
+<p align="center">
+  <a href="https://github.com/Talkdedsec1/tlk-sentinel/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/Talkdedsec1/tlk-sentinel/ci.yml?branch=main&style=flat-square&labelColor=0d1220&color=3ddc97"></a>
+  <img alt="tests" src="https://img.shields.io/badge/tests-58%20passing-3ddc97?style=flat-square&labelColor=0d1220">
+  <img alt="dependencies" src="https://img.shields.io/badge/runtime%20deps-0-5b8cff?style=flat-square&labelColor=0d1220">
+  <img alt="node" src="https://img.shields.io/badge/node-%E2%89%A522.5-5b8cff?style=flat-square&labelColor=0d1220">
+  <img alt="license" src="https://img.shields.io/badge/license-source--available-ffd43b?style=flat-square&labelColor=0d1220">
+</p>
 
-## Modules
+<p align="center">
+  <b>Detects attacks in your logs, bans the source, and shows you what happened — in one process.</b><br>
+  <sub>SSH · nginx · Next.js middleware · offline reputation · behavioural scoring · live dashboard</sub>
+</p>
 
-- **Rule engine** — JSON regex with threshold/window; SSH brute-force, nginx scanning,
-  SQLi/XSS, request floods.
-- **Event DB + live panel** — SQLite history and a real-time dashboard at `/` (SSE):
-  threat feed, ban list, one-click unban, 24h stats. Token protected.
-- **GeoIP + reputation** — offline CIDR blocklists (Tor exits, known bad networks) and
-  an optional country table; a blocklisted IP escalates its threat straight to critical.
-- **Behavioral anomaly** — per-IP request rate / path diversity / UA churn / 4xx ratio is
-  scored, catching attacks that no fixed signature would match.
-- **Active defense (self only)** — permanent nft ban set for repeat critical offenders.
-  Fully disabled in the public build, and disabled if the brand signature is broken.
+---
 
-## Two builds, one codebase
+## Why
 
-Behaviour is driven by JSON under `profiles/` — the code never forks.
+Most small fleets run `fail2ban` for SSH, nothing for the application, and find out
+about an incident from a customer. tlk-sentinel closes that gap with one agent: the
+same rule engine reads your server logs **and** runs inside your app, so a scanner
+probing `/.env` and the same IP hammering your login endpoint are one story, not two.
 
-| | `public` (community) | `self` (internal) |
+It ships two behaviours from one codebase. The community build watches and reports.
+The internal build enforces. Nothing about that is a code fork — it is a JSON profile.
+
+```
+              ┌──────────────┐
+  auth.log ──▶│              │──▶ nft / ipset       ban, escalating on repeat
+              │              │
+access.log ──▶│    engine    │──▶ SQLite            queryable event history
+              │              │
+Next.js    ──▶│  rules +     │──▶ live panel        SSE dashboard, one-click unban
+middleware    │  reputation  │
+              │  + anomaly   │──▶ Discord           embed per threat
+  files    ──▶│              │
+ (sha256)     └──────────────┘
+```
+
+## What it catches
+
+| | Detection | How |
 |---|---|---|
-| Mode | `monitor` | `enforce` |
-| Auto-ban | off | on, escalating |
-| Private rules (`rules/private`) | not loaded | loaded |
-| Honeypot / integrity / active defense | off | on |
-| Alerts | stdout | stdout + Discord |
+| **SSH** | brute-force, invalid users, direct root login | threshold windows per IP |
+| **HTTP** | SQLi, XSS, path traversal, `.env` / `wp-admin` / `phpmyadmin` probing, request floods | regex rules on normalized requests |
+| **Tooling** | sqlmap, nikto, nuclei, gobuster, masscan and friends | User-Agent signatures |
+| **Unknown attacks** | scans that match no signature | behavioural score: request rate, path diversity, UA churn, 4xx ratio |
+| **Known-bad sources** | Tor exits, abusive networks | offline CIDR reputation, escalates the threat to critical |
+| **Tampering** | changes to `.env`, configs, binaries | sha256 baseline, re-checked on a timer |
 
-The `self` profile, private rules, and secrets **never enter the repo** (`.gitignore`).
-The shippable build is produced with `npm run dist:public`; the script strips every
-self-only trace, scans the output for leaks, and verifies the public default is passive —
-if any check fails, the build is rejected.
+Encoded payloads do not slip through: requests are decoded (percent, double-percent
+and `+`) before matching, so `?id=1%2520union%2520select%25201` is caught exactly like
+its plain form. There are regression tests for each of those encodings.
 
-## License
+## Install
 
-Source-available (see `LICENSE`): **you may use and modify it; you may not sell or
-redistribute it.** For commercial use: talkdedsec@proton.me
-
-## Install (server agent)
+Requires Node 22.5+ (for the built-in SQLite). No other runtime dependency.
 
 ```bash
-git clone <repo> /opt/tlk-sentinel && cd /opt/tlk-sentinel
+git clone https://github.com/Talkdedsec1/tlk-sentinel /opt/tlk-sentinel
+cd /opt/tlk-sentinel
 npm install
 npm run build
-cp .env.example .env          # TLK_PROFILE, log paths, panel token, webhook
+cp .env.example .env
 npm run agent
 ```
 
-systemd:
-
 ```bash
-cp deploy/tlk-sentinel.service /etc/systemd/system/
-systemctl enable --now tlk-sentinel
+sudo cp deploy/tlk-sentinel.service /etc/systemd/system/
+sudo systemctl enable --now tlk-sentinel
 ```
 
-The firewall defaults to **dry-run** (writes no real rule, logs what it would do).
-Set `TLK_FW_DRYRUN=0` in `.env` when going live.
+The firewall starts in **dry-run**: it logs the ban it would apply and touches nothing.
+Watch it for a day, confirm the decisions look right, then set `TLK_FW_DRYRUN=0`.
 
-### nftables setup (enforce)
+<details>
+<summary>nftables sets for enforcing mode</summary>
 
 ```bash
 nft add table inet filter
 nft add set inet filter tlk_sentinel { type ipv4_addr\; flags timeout\; }
-nft add set inet filter tlk_perma { type ipv4_addr\; }
+nft add set inet filter tlk_perma  { type ipv4_addr\; }
 nft add chain inet filter input { type filter hook input priority 0\; }
 nft add rule inet filter input ip saddr @tlk_sentinel drop
-nft add rule inet filter input ip saddr @tlk_perma drop
+nft add rule inet filter input ip saddr @tlk_perma  drop
 ```
+</details>
 
-## Tests
+## Two builds, one codebase
 
-```bash
-npm test
-```
+|  | `public` — community | `self` — internal |
+|---|---|---|
+| Mode | `monitor`, reports only | `enforce`, bans |
+| Auto-ban | off | on, ×4 on repeat offenders |
+| Private rules | not loaded | loaded |
+| Honeypot paths, integrity, active defense | off | on |
+| Alerts | stdout | stdout + Discord |
 
-42 tests on Node's built-in runner, no test framework: engine thresholds and ban
-escalation, profile gating, WAF bypass resistance (percent, double-percent and plus
-encoding), reputation CIDR matching, anomaly scoring and cooldown, log tailing across
-truncation and logrotate, integrity baselines, SQLite store, panel HTML, plus two
-integration tests that boot the real agent end to end and assert the public build
-rejects anything unsafe.
+`npm run dist:public` produces the shippable tree. It strips the internal profile,
+private rules and signing key, scans the output for secrets, and asserts the public
+default is still passive. **If any check fails the build is rejected**, so an
+enforcing default can never reach a release by accident.
 
-## Panel
+## Live panel
 
-Defaults to `127.0.0.1:8787`. To expose it, `TLK_PANEL_TOKEN` is required; access via
-`http://host:8787/?token=...`. Put it behind nginx with an IP allowlist in production.
-Disable with `TLK_PANEL=0`.
+<p align="center"><sub>threat feed · severity split · ban list with one-click unban · 24h stats</sub></p>
 
-## Reputation lists
+Bound to `127.0.0.1:8787` by default. Exposing it on another interface **requires**
+`TLK_PANEL_TOKEN` — without one the agent refuses to bind and says so on startup.
+Behind nginx, add an IP allowlist too. `TLK_PANEL=0` turns it off.
 
-`data/reputation/*.txt` — one IP or CIDR per line (the file name becomes the tag).
-Trailing text and `#` comments are ignored. For a country table, point
-`TLK_COUNTRY_FILE` at a file of `CIDR,CC` lines.
+Every write endpoint validates its input: an IP that is not an IP never reaches `nft`.
 
-## Application layer (Next/Prisma)
+## Application layer
 
 ```ts
 import { WebGuard } from "@tlk-sentinel/web";
@@ -109,73 +126,154 @@ const guard = new WebGuard({
   trustedProxy: true,
 });
 
-const v = await guard.inspect(request, { trustProxy: true });
-if (v.action === "block") return new Response("blocked", { status: v.status });
+export async function middleware(request: Request) {
+  const verdict = await guard.inspect(request, { trustProxy: true });
+  if (verdict.action === "block") {
+    return new Response("blocked", { status: verdict.status, headers: verdict.headers });
+  }
+}
 ```
 
-## Language
+Verdicts carry hardened response headers (`nosniff`, `DENY`, HSTS, a locked-down
+`Permissions-Policy`), so you can apply them to allowed responses as well.
 
-TR + EN, switched with `TLK_LANG=tr|en`. Rule summaries carry `{tr,en}`; UI strings live
-in the `i18n` catalog.
+## Configuration
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `TLK_PROFILE` | `public` | which profile in `profiles/` to load |
+| `TLK_PROFILE_PATH` | – | explicit profile file, overrides the above |
+| `TLK_LANG` | `tr` | `tr` or `en`, applies to logs, alerts and panel |
+| `TLK_SSHD_LOG` | `/var/log/auth.log` | empty disables the source |
+| `TLK_NGINX_LOG` | – | nginx access log |
+| `TLK_FW_BACKEND` | `nft` | `nft`, `ipset` or `none` |
+| `TLK_FW_DRYRUN` | `1` | `0` to actually write firewall rules |
+| `TLK_ALLOWLIST` | `127.0.0.1,::1` | never banned |
+| `TLK_PANEL` / `_HOST` / `_PORT` / `_TOKEN` | `1` / `127.0.0.1` / `8787` / – | dashboard |
+| `TLK_DISCORD_WEBHOOK` | – | alert channel |
+| `TLK_REPUTATION_DIR` | `data/reputation` | CIDR blocklists, filename becomes the tag |
+| `TLK_COUNTRY_FILE` | – | `CIDR,CC` table for country attribution |
+| `TLK_ANOMALY` | `1` | behavioural scoring |
+| `TLK_INTEGRITY` | – | comma-separated files to checksum |
+
+Reputation feeds are not bundled — see [`data/reputation/README.md`](data/reputation/README.md)
+for the format and where to fetch Tor exit lists, Spamhaus DROP and FireHOL.
+
+## Tests
+
+```bash
+npm test
+```
+
+58 tests on Node's built-in runner, no test framework. They cover ban thresholds and
+escalation, profile gating, WAF bypass resistance across three encodings, reputation
+CIDR matching and country tables, anomaly scoring and its cooldown, log tailing across
+truncation **and logrotate**, integrity baselines, the SQLite store, alert payloads,
+firewall input validation, and config defaults. Four are integration tests that boot
+the real agent, drive it through a live log file and assert against the panel API; two
+more assert that a build with the attribution removed fails its signature check and
+**refuses to enforce bans**. CI runs the suite on Linux and Windows, Node 22 and 24.
 
 ## Layout
 
 ```
-packages/core   event schema + profile gate + engine + reputation + anomaly + brand
-packages/agent  server agent: log tail, ban, integrity, event DB, panel, active defense
-packages/web    application middleware (same engine)
-rules/public    public rules (ssh brute, nginx scan, sqli/xss)
-rules/private   self-only: honeypot, license recon, integrity   [git-ignored]
-profiles/       behaviour profiles
-data/           event DB + reputation lists   [git-ignored]
-scripts/        public build (leak-checked) + brand signing
+packages/core    events · profile gate · engine · reputation · anomaly · normalization · brand
+packages/agent   log tailing · firewall · integrity · SQLite store · panel · active defense
+packages/web     application middleware, same engine
+rules/public     shipped rules (ssh, nginx, web)
+profiles/        behaviour profiles
+tests/           58 tests, no framework
+scripts/         community build with leak and structural checks
 ```
+
+## License
+
+Source-available, see [LICENSE](LICENSE). **You may run it, read it and modify it for
+your own use. You may not sell it or redistribute it.** Commercial licensing:
+talkdedsec@proton.me
+
+Made by [talkdedsec](https://github.com/Talkdedsec1). The attribution is signed with
+Ed25519 and verified at runtime — a build that strips it disables its own enforcement.
 
 ---
 
 <details>
 <summary><b>Türkçe</b></summary>
 
-### tlk-sentinel
+### Neden
 
-Sunucu ve uygulama katmanını tek olay hattında birleştiren güvenlik motoru. SSH/nginx
-loglarını izler, saldırı kalıplarını yakalar, IP banlar, kritik dosya bütünlüğünü
-kontrol eder, Discord'a bildirir. Aynı kural motoru Next/Prisma uygulamalarında
-middleware olarak da çalışır. Sıfır dış bağımlılık — Node'un yerleşik `node:sqlite` ve
-`node:http`'si ile çalışır, tek `npm install` yeter.
+Küçük sunucu filoları SSH için `fail2ban` çalıştırır, uygulama tarafında hiçbir şey
+yoktur ve olaydan müşteri arayınca haberdar olunur. tlk-sentinel bu boşluğu tek ajanla
+kapatıyor: aynı kural motoru hem sunucu loglarını okuyor **hem de** uygulamanın içinde
+çalışıyor. Böylece `/.env` yoklayan tarayıcı ile giriş ucunu döven aynı IP tek bir
+olay hikâyesi oluyor.
 
-### Modüller
+Tek koddan iki davranış çıkıyor. Topluluk sürümü izler ve raporlar, iç sürüm uygular.
+Bu bir kod çatallanması değil, sadece bir JSON profili.
 
-- **Kural motoru** — JSON regex + eşik/pencere; ssh brute, nginx tarama, sqli/xss, flood.
-- **Olay DB + canlı panel** — SQLite geçmiş, `/` altında gerçek zamanlı dashboard (SSE):
-  tehdit akışı, ban listesi, tek tıkla ban kaldırma, 24s istatistik. Token korumalı.
-- **GeoIP + itibar** — offline CIDR blocklist'ler (tor exit, bilinen kötü ağlar) ve
-  isteğe bağlı ülke tablosu; kara listedeki IP tehdidi doğrudan kritik yapar.
-- **Davranışsal anomali** — IP başına istek ritmi / yol çeşitliliği / UA değişimi / 404
-  oranı skorlanır; sabit imzaya uymayan saldırıları da yakalar.
-- **Aktif savunma (yalnız self)** — tekrarlayan kritik saldırgana kalıcı nft ban seti.
-  Public sürümde tamamen kapalı, marka imzası düşerse de kapanır.
+### Neleri yakalıyor
 
-### İki sürüm, tek kod
+- **SSH**: parola deneme, geçersiz kullanıcı, doğrudan root girişi
+- **HTTP**: SQLi, XSS, dizin atlama, `.env`/`wp-admin`/`phpmyadmin` yoklaması, istek seli
+- **Araçlar**: sqlmap, nikto, nuclei, gobuster, masscan imzaları
+- **Bilinmeyen saldırılar**: hiçbir imzaya uymayan taramalar — istek ritmi, yol
+  çeşitliliği, UA değişimi ve 404 oranından davranış skoru
+- **Bilinen kötü kaynaklar**: offline CIDR itibar listeleri, tehdidi kritiğe çıkarır
+- **Kurcalama**: `.env`, config ve binary dosyalarının sha256 tabanı
 
-Davranış `profiles/` içindeki JSON ile belirlenir; kod çatallanmaz. `public` =
-izle-uyar, otomatik ban kapalı, özel kural yok. `self` = zorla-banla, kademeli ban,
-özel kurallar + honeypot + bütünlük + aktif savunma, Discord bildirimi. `self` profili,
-özel kurallar ve sırlar repoya girmez. Yayın sürümü `npm run dist:public` ile üretilir;
-script self izlerini çıkarır, sızıntı tarar, public varsayılanın pasif olduğunu doğrular
-— biri düşerse build reddedilir.
-
-### Lisans
-
-Kaynak-erişilebilir (`LICENSE`): kullanabilir ve değiştirebilirsin; satamaz, yeniden
-dağıtamazsın. Ticari kullanım için: talkdedsec@proton.me
+Kodlanmış yükler kaçamıyor: istekler eşleştirmeden önce çözülüyor (yüzde, çift yüzde
+ve `+`), yani `?id=1%2520union%2520select%25201` düz hâliyle aynı şekilde yakalanıyor.
+Her kodlama için regresyon testi var.
 
 ### Kurulum
 
-`npm install && npm run build`, `.env` doldur (`TLK_PROFILE`, log yolları, panel token),
-`npm run agent`. Güvenlik duvarı varsayılan dry-run; canlıda `TLK_FW_DRYRUN=0` + nft
-tabloları (yukarıdaki komutlar). Panel varsayılan `127.0.0.1:8787`, dışarı açarsan
-`TLK_PANEL_TOKEN` zorunlu (tokensiz loopback dışına açılmayı ajan reddeder). Dil
-`TLK_LANG=tr|en`. Test: `npm test` (42 test, dış çatı yok).
+Node 22.5+ gerekiyor (yerleşik SQLite için), başka çalışma zamanı bağımlılığı yok.
+
+```bash
+git clone https://github.com/Talkdedsec1/tlk-sentinel /opt/tlk-sentinel
+cd /opt/tlk-sentinel && npm install && npm run build
+cp .env.example .env && npm run agent
+```
+
+Güvenlik duvarı **dry-run** başlıyor: uygulayacağı banı loglar, hiçbir şeye dokunmaz.
+Bir gün izle, kararlar doğru görünüyorsa `TLK_FW_DRYRUN=0` yap. nft set komutları
+yukarıdaki açılır bölümde.
+
+### İki sürüm
+
+`public` = izle-raporla, otomatik ban kapalı, özel kurallar yok, sadece stdout.
+`self` = zorla-banla, tekrarlayanda ×4 süre, özel kurallar + bal kabı + bütünlük +
+aktif savunma, Discord bildirimi.
+
+`npm run dist:public` dağıtılacak ağacı üretir: iç profili, özel kuralları ve imza
+anahtarını çıkarır, çıktıyı sır taramasından geçirir, public varsayılanın hâlâ pasif
+olduğunu doğrular. **Kontrollerden biri düşerse build reddedilir** — yani zorlayıcı
+bir varsayılan kazara yayına çıkamaz.
+
+### Panel
+
+Varsayılan `127.0.0.1:8787`. Başka bir arayüze açmak **`TLK_PANEL_TOKEN` zorunlu
+kılar**; token yoksa ajan bağlanmayı reddeder ve bunu açılışta söyler. nginx arkasında
+ayrıca IP kısıtı koy. Kapatmak için `TLK_PANEL=0`. Yazan tüm uçlar girdisini doğrular:
+IP olmayan bir değer asla `nft`'ye ulaşmaz.
+
+### Testler
+
+`npm test` — 58 test, dış çatı yok. Ban eşikleri ve kademeli süre, profil geçidi, üç
+kodlamada WAF bypass direnci, itibar ve ülke tabloları, anomali skoru ve soğuması, log
+takibinin truncate **ve logrotate** altında sağ kalması, bütünlük tabanı, SQLite
+deposu, uyarı gövdeleri, firewall girdi doğrulaması ve config varsayılanları. Dördü
+gerçek ajanı ayağa kaldırıp panel API'sine karşı doğrulama yapan entegrasyon testi;
+ikisi de imzası bozulmuş bir build'in **ban uygulamayı reddettiğini** doğruluyor. CI
+Linux ve Windows'ta, Node 22 ve 24 ile çalışıyor.
+
+### Lisans
+
+Kaynak-erişilebilir ([LICENSE](LICENSE)): **çalıştırabilir, okuyabilir, kendi kullanımın
+için değiştirebilirsin; satamaz ve yeniden dağıtamazsın.** Ticari lisans:
+talkdedsec@proton.me
+
+Marka Ed25519 ile imzalı ve çalışma anında doğrulanıyor — imzayı söken bir build kendi
+zorlama yeteneğini kapatır.
 
 </details>

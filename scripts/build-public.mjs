@@ -38,6 +38,8 @@ const include = [
   "tests",
   "scripts/build-public.mjs",
   "deploy",
+  "assets",
+  ".github",
   "package.json",
   "LICENSE",
   "README.md",
@@ -45,16 +47,14 @@ const include = [
   ".gitignore",
 ];
 
-await mkdir(out, { recursive: true });
-for (const entry of await readdir(out)) {
-  if (entry === ".git" || entry === "node_modules") continue;
-  await rm(resolve(out, entry), { recursive: true, force: true });
-}
+const stage = resolve(root, ".dist-public-stage");
+await rm(stage, { recursive: true, force: true });
+await mkdir(stage, { recursive: true });
 
 for (const rel of include) {
   const src = resolve(root, rel);
   if (!existsSync(src)) continue;
-  await cp(src, resolve(out, rel), { recursive: true, filter: keep });
+  await cp(src, resolve(stage, rel), { recursive: true, filter: keep });
 }
 
 const leakHits = [];
@@ -75,28 +75,39 @@ async function walk(dir) {
     }
   }
 }
-await walk(out);
+await walk(stage);
 
 const structural = [];
-if (existsSync(resolve(out, "rules/private"))) structural.push("rules/private present");
-if (existsSync(resolve(out, "profiles/self.json"))) structural.push("profiles/self.json present");
-if (existsSync(resolve(out, "scripts/.brand-private.pem"))) structural.push("brand private key present");
+if (existsSync(resolve(stage, "rules/private"))) structural.push("rules/private present");
+if (existsSync(resolve(stage, "profiles/self.json"))) structural.push("profiles/self.json present");
+if (existsSync(resolve(stage, "scripts/.brand-private.pem"))) structural.push("brand private key present");
 
-const pub = JSON.parse(await readFile(resolve(out, "profiles/public.json"), "utf8"));
+const pub = JSON.parse(await readFile(resolve(stage, "profiles/public.json"), "utf8"));
 const bad = pub.response.autoBan || pub.response.mode !== "monitor" || pub.detectors.loadPrivateRules;
 
-await writeFile(
-  resolve(out, "BUILD-INFO.txt"),
-  `tlk-sentinel public build\nbuilt: ${new Date().toISOString()}\n` +
-    `leak scan: ${leakHits.length === 0 ? "clean" : leakHits.join("\n  ")}\n` +
-    `structural: ${structural.length === 0 ? "clean" : structural.join(", ")}\n`,
-);
-
 if (leakHits.length || bad || structural.length) {
-  console.error("PUBLIC BUILD REJECTED:");
+  await rm(stage, { recursive: true, force: true });
+  console.error("PUBLIC BUILD REJECTED (nothing was written):");
   if (bad) console.error("  public.json not in safe default (autoBan/enforce/private on)");
   for (const h of structural) console.error("  structural:", h);
   for (const h of leakHits) console.error("  secret:", h);
   process.exit(1);
 }
+
+await writeFile(
+  resolve(stage, "BUILD-INFO.txt"),
+  `tlk-sentinel public build\nbuilt: ${new Date().toISOString()}\n` +
+    `leak scan: clean\nstructural: clean\n`,
+);
+
+await mkdir(out, { recursive: true });
+for (const entry of await readdir(out)) {
+  if (entry === ".git" || entry === "node_modules") continue;
+  await rm(resolve(out, entry), { recursive: true, force: true });
+}
+for (const entry of await readdir(stage)) {
+  await cp(resolve(stage, entry), resolve(out, entry), { recursive: true });
+}
+await rm(stage, { recursive: true, force: true });
+
 console.log(`public build ready -> ${out} (leak + structural clean)`);

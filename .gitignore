@@ -17,3 +17,4 @@ scripts/.brand-private.pem
 _demo.mjs
 _panel-demo.html
 _panel-preview.html
+.dist-public-stage/
