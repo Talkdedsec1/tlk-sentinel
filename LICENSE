@@ -1,42 +1,85 @@
-tlk-sentinel Kaynak-Erişilebilir Lisansı 1.0
-(tlk-sentinel Source-Available License 1.0)
+tlk-sentinel Source-Available License 1.1
+
+Copyright (c) 2026 Talkdedsec (talkdedsec@proton.me). All rights reserved.
+
+This license grants permission to use this software (the "Software") under the
+terms below. The English text is authoritative. A Turkish translation follows and
+is provided for convenience; if the two conflict, the English text governs.
+
+1. PERMITTED
+   a. Running the Software on your own personal or corporate systems, including
+      systems you operate commercially for your own business.
+   b. Reading, studying and modifying the source for your own installation.
+   c. Sharing patches or excerpts for the purpose of reporting a vulnerability or
+      proposing a contribution to the copyright holder.
+
+2. NOT PERMITTED
+   a. Selling the Software or a derivative of it, renting or leasing it, or
+      offering it for a fee as part of any product or service, including as a
+      hosted or managed service.
+   b. Redistributing the Software or a derivative of it to any third party,
+      publishing it publicly or privately, or mirroring it.
+   c. Removing or altering this license text, the copyright notice, or the
+      authorship attribution embedded in the Software.
+   d. Using the Software to attack, gain unauthorized access to, or cause damage
+      to systems for which you do not hold explicit written authorization.
+
+3. CONTRIBUTIONS
+   Contributions submitted to the repository are deemed offered under this license
+   and are licensed back to the copyright holder.
+
+4. NO WARRANTY
+   The Software is provided "as is", without warranty of any kind, express or
+   implied. Being security software guarantees no outcome. The copyright holder is
+   not liable for any direct or indirect damages arising from its use.
+
+5. TERMINATION
+   All rights granted under this license terminate automatically and immediately
+   upon any breach of section 2.
+
+For commercial use, redistribution, or any permission beyond these terms, contact
+talkdedsec@proton.me
+
+================================================================================
+
+tlk-sentinel Kaynak-Erişilebilir Lisansı 1.1  (Türkçe çeviri)
 
 Telif hakkı (c) 2026 Talkdedsec (talkdedsec@proton.me). Tüm hakları saklıdır.
 
 Bu lisans, aşağıdaki koşullarla bu yazılımı ("Yazılım") kullanma iznini verir.
-Türkçe metin asıldır; İngilizce özet yalnızca kolaylık içindir.
+Asıl metin İngilizcedir. Aşağıdaki Türkçe çeviri kolaylık için sunulmuştur; iki
+metin çelişirse İngilizce metin geçerlidir.
 
 1. İZİN VERİLEN
-   a. Yazılımı kendi kişisel veya kurumsal sistemlerinde çalıştırmak.
+   a. Yazılımı kendi kişisel veya kurumsal sistemlerinde çalıştırmak; buna kendi
+      işin için ticari olarak işlettiğin sistemler dahildir.
    b. Kaynağı okumak, incelemek ve kendi kurulumun için değiştirmek.
-   c. Güvenlik açığı bildirmek amacıyla değişiklik parçaları paylaşmak.
+   c. Güvenlik açığı bildirmek veya telif hakkı sahibine katkı önermek amacıyla
+      yama ya da kod parçası paylaşmak.
 
 2. YASAK OLAN
-   a. Yazılımı veya türevini satmak, kiralamak, bir ürün ya da hizmetin
-      parçası olarak ücret karşılığı sunmak.
-   b. Yazılımı veya türevini üçüncü kişilere yeniden dağıtmak, kamuya açık
-      ya da özel olarak yeniden yayımlamak, aynası (mirror) çıkarmak.
-   c. Bu lisans metnini, telif uyarısını veya kaynak izlerini kaldırmak.
-   d. Yazılımı, açık yazılı izne sahip olmadığın sistemlere yönelik saldırı,
-      izinsiz erişim veya zarar amacıyla kullanmak.
+   a. Yazılımı veya türevini satmak, kiralamak ya da barındırılan/yönetilen hizmet
+      dahil olmak üzere herhangi bir ürün veya hizmetin parçası olarak ücret
+      karşılığı sunmak.
+   b. Yazılımı veya türevini üçüncü kişilere yeniden dağıtmak, kamuya açık ya da
+      özel olarak yayımlamak, aynasını (mirror) çıkarmak.
+   c. Bu lisans metnini, telif uyarısını veya Yazılıma gömülü eser sahipliği
+      bilgisini kaldırmak ya da değiştirmek.
+   d. Yazılımı, açık yazılı iznine sahip olmadığın sistemlere yönelik saldırı,
+      izinsiz erişim veya zarar verme amacıyla kullanmak.
 
 3. KATKILAR
-   Depoya gönderilen katkılar, katkı sahibi tarafından bu lisans altında
-   sunulmuş sayılır ve telif hakkı sahibine geri lisanslanır.
+   Depoya gönderilen katkılar bu lisans altında sunulmuş sayılır ve telif hakkı
+   sahibine geri lisanslanır.
 
 4. GARANTİ YOK
-   Yazılım "olduğu gibi" sunulur. Güvenlik yazılımı olması hiçbir sonucu
-   garanti etmez. Doğrudan veya dolaylı zararlardan telif hakkı sahibi
-   sorumlu tutulamaz.
+   Yazılım "olduğu gibi" sunulur; açık ya da örtük hiçbir garanti verilmez.
+   Güvenlik yazılımı olması hiçbir sonucu garanti etmez. Telif hakkı sahibi,
+   kullanımdan doğan doğrudan veya dolaylı zararlardan sorumlu tutulamaz.
 
 5. FESİH
-   2. maddedeki yasaklardan herhangi biri ihlal edilirse bu lisansla verilen
-   tüm haklar kendiliğinden ve derhal sona erer.
+   2. maddedeki yasaklardan herhangi biri ihlal edilirse bu lisansla verilen tüm
+   haklar kendiliğinden ve derhal sona erer.
 
 Ticari kullanım, yeniden dağıtım veya bu koşulların dışında bir izin için:
 talkdedsec@proton.me
-
----
-EN (summary, non-binding): You may run and modify this software for your own
-use. You may NOT sell it, offer it as a paid product/service, or redistribute
-it in any form. All rights reserved. Contact talkdedsec@proton.me for other use.
