@@ -107,7 +107,9 @@ enforcing default can never reach a release by accident.
 
 ## Live panel
 
-<p align="center"><sub>threat feed · severity split · ban list with one-click unban · 24h stats</sub></p>
+<p align="center">
+  <img src="assets/panel.png" alt="tlk-sentinel dashboard: live threat feed, severity split and ban list" width="100%">
+</p>
 
 Bound to `127.0.0.1:8787` by default. Exposing it on another interface **requires**
 `TLK_PANEL_TOKEN` — without one the agent refuses to bind and says so on startup.

@@ -119,11 +119,15 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:var(--bg2)}
 .dist{padding:14px 16px}
 .bar{display:flex;align-items:center;gap:10px;margin:7px 0}
 .bar .k{width:66px;color:var(--mut);font-size:11px;text-transform:capitalize}
-.bar .track{flex:1;height:8px;background:var(--bg2);border-radius:6px;overflow:hidden}
-.bar .fill{height:100%;border-radius:6px;transition:width .5s ease}
+.bar .track{display:block;flex:1;height:8px;background:var(--bg2);border-radius:6px;overflow:hidden}
+.bar .fill{display:block;height:100%;min-width:2px;border-radius:6px;transition:width .5s ease}
 .bar .v{width:34px;text-align:right;font-family:var(--font);color:var(--mut);font-size:11px}
 .empty{padding:22px 16px;color:var(--faint);text-align:center;font-size:12px}
-.crit .fill{background:var(--crit)}.high .fill{background:var(--high)}.medium .fill{background:var(--med)}.low .fill,.info .fill{background:var(--low)}
+.bar.critical .fill{background:var(--crit)}
+.bar.high .fill{background:var(--high)}
+.bar.medium .fill{background:var(--med)}
+.bar.low .fill,.bar.info .fill{background:var(--low)}
+.bar .fill[style*="width:0%"]{background:var(--line2);min-width:0}
 </style></head><body>
 <header>
 <div class="brand"><div class="mark">${ICON.shield}</div><div><h1>${s.title}</h1><span>${s.sub}</span></div></div>
