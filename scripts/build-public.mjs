@@ -37,6 +37,7 @@ const include = [
   "data/reputation",
   "tests",
   "scripts/build-public.mjs",
+  "CHANGELOG.md",
   "deploy",
   "assets",
   ".github",

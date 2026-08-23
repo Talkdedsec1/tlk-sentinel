@@ -135,10 +135,7 @@ function feedAnomaly(line: string): void {
   );
 }
 
-const integrity =
-  profile.detectors.loadPrivateRules && cfg.integrityTargets.length > 0
-    ? new IntegrityWatch(cfg.integrityTargets)
-    : null;
+const integrity = cfg.integrityTargets.length > 0 ? new IntegrityWatch(cfg.integrityTargets) : null;
 
 async function main(): Promise<void> {
   log(brandBanner());

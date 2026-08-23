@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://github.com/Talkdedsec1/tlk-sentinel/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/Talkdedsec1/tlk-sentinel/ci.yml?branch=main&style=flat-square&labelColor=0d1220&color=3ddc97"></a>
-  <img alt="tests" src="https://img.shields.io/badge/tests-58%20passing-3ddc97?style=flat-square&labelColor=0d1220">
+  <img alt="tests" src="https://img.shields.io/badge/tests-60%20passing-3ddc97?style=flat-square&labelColor=0d1220">
   <img alt="dependencies" src="https://img.shields.io/badge/runtime%20deps-0-5b8cff?style=flat-square&labelColor=0d1220">
   <img alt="node" src="https://img.shields.io/badge/node-%E2%89%A522.5-5b8cff?style=flat-square&labelColor=0d1220">
   <img alt="license" src="https://img.shields.io/badge/license-source--available-ffd43b?style=flat-square&labelColor=0d1220">
@@ -49,7 +49,7 @@ middleware    │  reputation  │
 | **Tooling** | sqlmap, nikto, nuclei, gobuster, masscan and friends | User-Agent signatures |
 | **Unknown attacks** | scans that match no signature | behavioural score: request rate, path diversity, UA churn, 4xx ratio |
 | **Known-bad sources** | Tor exits, abusive networks | offline CIDR reputation, escalates the threat to critical |
-| **Tampering** | changes to `.env`, configs, binaries | sha256 baseline, re-checked on a timer |
+| **Tampering** | changes to `.env`, configs, binaries | sha256 baseline, re-checked on a timer; set `TLK_INTEGRITY` |
 
 Encoded payloads do not slip through: requests are decoded (percent, double-percent
 and `+`) before matching, so `?id=1%2520union%2520select%25201` is caught exactly like
@@ -96,7 +96,8 @@ nft add rule inet filter input ip saddr @tlk_perma  drop
 | Mode | `monitor`, reports only | `enforce`, bans |
 | Auto-ban | off | on, ×4 on repeat offenders |
 | Private rules | not loaded | loaded |
-| Honeypot paths, integrity, active defense | off | on |
+| Honeypot paths, active defense | off | on |
+| Integrity watching | available, opt-in | available, opt-in |
 | Alerts | stdout | stdout + Discord |
 
 `npm run dist:public` produces the shippable tree. It strips the internal profile,
@@ -148,13 +149,18 @@ Verdicts carry hardened response headers (`nosniff`, `DENY`, HSTS, a locked-down
 | `TLK_NGINX_LOG` | – | nginx access log |
 | `TLK_FW_BACKEND` | `nft` | `nft`, `ipset` or `none` |
 | `TLK_FW_DRYRUN` | `1` | `0` to actually write firewall rules |
+| `TLK_FW_CHAIN` | `tlk_sentinel` | nft set / ipset name used for timed bans |
 | `TLK_ALLOWLIST` | `127.0.0.1,::1` | never banned |
 | `TLK_PANEL` / `_HOST` / `_PORT` / `_TOKEN` | `1` / `127.0.0.1` / `8787` / – | dashboard |
 | `TLK_DISCORD_WEBHOOK` | – | alert channel |
+| `TLK_DB` | `data/sentinel.db` | SQLite event store |
 | `TLK_REPUTATION_DIR` | `data/reputation` | CIDR blocklists, filename becomes the tag |
 | `TLK_COUNTRY_FILE` | – | `CIDR,CC` table for country attribution |
 | `TLK_ANOMALY` | `1` | behavioural scoring |
 | `TLK_INTEGRITY` | – | comma-separated files to checksum |
+| `TLK_SWEEP_MS` | `30000` | how often counters expire and files are re-checked |
+| `TLK_ACTIVEDEF_SET` | `tlk_perma` | nft set for permanent bans (internal build) |
+| `TLK_ACTIVEDEF_CRITS` | `2` | criticals from one IP before a permanent ban |
 
 Reputation feeds are not bundled — see [`data/reputation/README.md`](data/reputation/README.md)
 for the format and where to fetch Tor exit lists, Spamhaus DROP and FireHOL.
@@ -165,7 +171,7 @@ for the format and where to fetch Tor exit lists, Spamhaus DROP and FireHOL.
 npm test
 ```
 
-58 tests on Node's built-in runner, no test framework. They cover ban thresholds and
+60 tests on Node's built-in runner, no test framework. They cover ban thresholds and
 escalation, profile gating, WAF bypass resistance across three encodings, reputation
 CIDR matching and country tables, anomaly scoring and its cooldown, log tailing across
 truncation **and logrotate**, integrity baselines, the SQLite store, alert payloads,
@@ -182,7 +188,7 @@ packages/agent   log tailing · firewall · integrity · SQLite store · panel �
 packages/web     application middleware, same engine
 rules/public     shipped rules (ssh, nginx, web)
 profiles/        behaviour profiles
-tests/           58 tests, no framework
+tests/           60 tests, no framework
 scripts/         community build with leak and structural checks
 ```
 
@@ -259,7 +265,7 @@ IP olmayan bir değer asla `nft`'ye ulaşmaz.
 
 ### Testler
 
-`npm test` — 58 test, dış çatı yok. Ban eşikleri ve kademeli süre, profil geçidi, üç
+`npm test` — 60 test, dış çatı yok. Ban eşikleri ve kademeli süre, profil geçidi, üç
 kodlamada WAF bypass direnci, itibar ve ülke tabloları, anomali skoru ve soğuması, log
 takibinin truncate **ve logrotate** altında sağ kalması, bütünlük tabanı, SQLite
 deposu, uyarı gövdeleri, firewall girdi doğrulaması ve config varsayılanları. Dördü

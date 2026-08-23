@@ -1,0 +1,11 @@
+[
+  {
+    "id": "integrity-breach",
+    "origin": "integrity",
+    "match": "INTEGRITY-BREACH",
+    "severity": "critical",
+    "summary": { "tr": "İzlenen kritik dosya değişti", "en": "Watched critical file changed" },
+    "threshold": 1,
+    "windowSec": 3600
+  }
+]

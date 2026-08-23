@@ -1,8 +1,12 @@
 {
   "name": "tlk-sentinel",
   "private": true,
-  "version": "0.1.0",
-  "description": "Sunucu ve uygulama katmanı güvenlik motoru — tek olay hattı, tek panel",
+  "version": "1.0.0",
+  "description": "Server and application security engine: log-driven detection, IP banning, reputation and anomaly scoring, live panel",
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "talkdedsec <talkdedsec@proton.me>",
+  "repository": { "type": "git", "url": "git+https://github.com/Talkdedsec1/tlk-sentinel.git" },
+  "engines": { "node": ">=22.5" },
   "workspaces": [
     "packages/core",
     "packages/agent",

@@ -197,6 +197,16 @@ test("engine truncates oversized lines before matching", () => {
   assert.equal(far.length, 0, "content past the cap is not scanned");
 });
 
+test("integrity breaches are reported by the community build too", () => {
+  const e = new Engine({ profile: publicProfile, rules: pubRules, lang: "en" });
+  const acts = e.ingest({ origin: "integrity", at: Date.now(), line: "INTEGRITY-BREACH /etc/app.env aaa -> bbb" });
+  const alert = acts.find(a => a.kind === "alert");
+  assert.ok(alert, "public profile must surface integrity breaches");
+  assert.equal(alert.threat.severity, "critical");
+  assert.equal(alert.threat.rule, "integrity-breach");
+  assert.ok(!acts.some(a => a.kind === "ban"), "monitor mode still never bans");
+});
+
 test("anomaly stays calm on normal traffic", () => {
   const an = new Anomaly();
   let s;
