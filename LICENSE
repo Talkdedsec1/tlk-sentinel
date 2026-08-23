@@ -1,0 +1,42 @@
+tlk-sentinel Kaynak-Erişilebilir Lisansı 1.0
+(tlk-sentinel Source-Available License 1.0)
+
+Telif hakkı (c) 2026 Talkdedsec (talkdedsec@proton.me). Tüm hakları saklıdır.
+
+Bu lisans, aşağıdaki koşullarla bu yazılımı ("Yazılım") kullanma iznini verir.
+Türkçe metin asıldır; İngilizce özet yalnızca kolaylık içindir.
+
+1. İZİN VERİLEN
+   a. Yazılımı kendi kişisel veya kurumsal sistemlerinde çalıştırmak.
+   b. Kaynağı okumak, incelemek ve kendi kurulumun için değiştirmek.
+   c. Güvenlik açığı bildirmek amacıyla değişiklik parçaları paylaşmak.
+
+2. YASAK OLAN
+   a. Yazılımı veya türevini satmak, kiralamak, bir ürün ya da hizmetin
+      parçası olarak ücret karşılığı sunmak.
+   b. Yazılımı veya türevini üçüncü kişilere yeniden dağıtmak, kamuya açık
+      ya da özel olarak yeniden yayımlamak, aynası (mirror) çıkarmak.
+   c. Bu lisans metnini, telif uyarısını veya kaynak izlerini kaldırmak.
+   d. Yazılımı, açık yazılı izne sahip olmadığın sistemlere yönelik saldırı,
+      izinsiz erişim veya zarar amacıyla kullanmak.
+
+3. KATKILAR
+   Depoya gönderilen katkılar, katkı sahibi tarafından bu lisans altında
+   sunulmuş sayılır ve telif hakkı sahibine geri lisanslanır.
+
+4. GARANTİ YOK
+   Yazılım "olduğu gibi" sunulur. Güvenlik yazılımı olması hiçbir sonucu
+   garanti etmez. Doğrudan veya dolaylı zararlardan telif hakkı sahibi
+   sorumlu tutulamaz.
+
+5. FESİH
+   2. maddedeki yasaklardan herhangi biri ihlal edilirse bu lisansla verilen
+   tüm haklar kendiliğinden ve derhal sona erer.
+
+Ticari kullanım, yeniden dağıtım veya bu koşulların dışında bir izin için:
+talkdedsec@proton.me
+
+---
+EN (summary, non-binding): You may run and modify this software for your own
+use. You may NOT sell it, offer it as a paid product/service, or redistribute
+it in any form. All rights reserved. Contact talkdedsec@proton.me for other use.

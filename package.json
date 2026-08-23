@@ -1,0 +1,24 @@
+{
+  "name": "tlk-sentinel",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Sunucu ve uygulama katmanı güvenlik motoru — tek olay hattı, tek panel",
+  "workspaces": [
+    "packages/core",
+    "packages/agent",
+    "packages/web"
+  ],
+  "scripts": {
+    "build": "tsc -b packages/core packages/agent packages/web",
+    "agent": "node --enable-source-maps --disable-warning=ExperimentalWarning packages/agent/dist/index.js",
+    "agent:dev": "tsx packages/agent/src/index.ts",
+    "test": "node --disable-warning=ExperimentalWarning --test \"tests/*.test.mjs\"",
+    "typecheck": "tsc -b packages/core packages/agent packages/web",
+    "dist:public": "node scripts/build-public.mjs"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "@types/node": "^22.10.2"
+  }
+}

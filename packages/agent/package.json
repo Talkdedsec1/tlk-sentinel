@@ -1,0 +1,14 @@
+{
+  "name": "@tlk-sentinel/agent",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "start": "node --enable-source-maps --disable-warning=ExperimentalWarning dist/index.js",
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@tlk-sentinel/core": "*"
+  }
+}

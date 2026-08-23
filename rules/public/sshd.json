@@ -1,0 +1,29 @@
+[
+  {
+    "id": "ssh-bruteforce",
+    "origin": "sshd",
+    "match": "Failed password for (invalid user )?\\S+ from (?<ip>\\d{1,3}(\\.\\d{1,3}){3})",
+    "severity": "high",
+    "summary": { "tr": "SSH parola deneme saldırısı", "en": "SSH password brute-force" },
+    "threshold": 5,
+    "windowSec": 120
+  },
+  {
+    "id": "ssh-invalid-user",
+    "origin": "sshd",
+    "match": "Invalid user \\S+ from (?<ip>\\d{1,3}(\\.\\d{1,3}){3})",
+    "severity": "medium",
+    "summary": { "tr": "Var olmayan kullanıcı ile SSH denemesi", "en": "SSH attempt with invalid user" },
+    "threshold": 3,
+    "windowSec": 120
+  },
+  {
+    "id": "ssh-root-attempt",
+    "origin": "sshd",
+    "match": "Failed password for root from (?<ip>\\d{1,3}(\\.\\d{1,3}){3})",
+    "severity": "high",
+    "summary": { "tr": "root ile doğrudan SSH denemesi", "en": "Direct SSH login attempt as root" },
+    "threshold": 2,
+    "windowSec": 300
+  }
+]

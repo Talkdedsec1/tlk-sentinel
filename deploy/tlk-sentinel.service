@@ -1,0 +1,21 @@
+[Unit]
+Description=tlk-sentinel guvenlik ajani
+After=network.target nginx.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/tlk-sentinel
+EnvironmentFile=/opt/tlk-sentinel/.env
+ExecStart=/usr/bin/node --enable-source-maps --disable-warning=ExperimentalWarning packages/agent/dist/index.js
+Restart=always
+RestartSec=3
+# ban icin gereken minimum yetenek; gerisi kisitli
+AmbientCapabilities=CAP_NET_ADMIN
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/opt/tlk-sentinel/data
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

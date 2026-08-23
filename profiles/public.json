@@ -1,0 +1,21 @@
+{
+  "profile": "public",
+  "label": "Topluluk sürümü",
+  "visibility": "public",
+  "response": {
+    "mode": "monitor",
+    "autoBan": true,
+    "banSeconds": 3600,
+    "maxBanSeconds": 86400
+  },
+  "detectors": {
+    "loadPrivateRules": false,
+    "counterScan": false,
+    "activeDeception": false
+  },
+  "alerts": {
+    "channels": [
+      "stdout"
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+[
+  {
+    "id": "web-xss-probe",
+    "origin": "web-middleware",
+    "match": "(<script|onerror\\s*=|javascript:|onload\\s*=|document\\.cookie)",
+    "flags": "i",
+    "severity": "medium",
+    "summary": { "tr": "İstekte XSS yükü izi", "en": "XSS payload trace in request" },
+    "threshold": 1,
+    "windowSec": 60
+  },
+  {
+    "id": "web-sqli-body",
+    "origin": "web-middleware",
+    "match": "(union\\s+select|' or 1=1|\\bor\\b\\s+'?1'?='?1|--\\s|;--)",
+    "flags": "i",
+    "severity": "high",
+    "summary": { "tr": "İstek gövdesinde SQL injection izi", "en": "SQL injection trace in request body" },
+    "threshold": 1,
+    "windowSec": 60
+  },
+  {
+    "id": "web-login-bruteforce",
+    "origin": "web-middleware",
+    "match": "POST (/api/auth/|/login|/admin/login)",
+    "severity": "high",
+    "summary": { "tr": "Giriş uçuna parola deneme saldırısı", "en": "Login endpoint brute-force" },
+    "threshold": 10,
+    "windowSec": 120
+  }
+]

@@ -1,0 +1,51 @@
+[
+  {
+    "id": "nginx-path-traversal",
+    "origin": "nginx",
+    "match": "(\\.\\./|%2e%2e%2f|%2e%2e/|\\.\\.%2f)",
+    "flags": "i",
+    "severity": "high",
+    "summary": { "tr": "Dizin atlama (path traversal) denemesi", "en": "Path traversal attempt" },
+    "threshold": 1,
+    "windowSec": 60
+  },
+  {
+    "id": "nginx-sensitive-file",
+    "origin": "nginx",
+    "match": "(/\\.env|/\\.git/|/wp-login|/wp-admin|/phpmyadmin|/\\.aws/|/config\\.php)",
+    "flags": "i",
+    "severity": "high",
+    "summary": { "tr": "Hassas dosya/panel taraması", "en": "Sensitive file/panel probing" },
+    "threshold": 2,
+    "windowSec": 120
+  },
+  {
+    "id": "nginx-sqli-probe",
+    "origin": "nginx",
+    "match": "(union(\\s|%20|\\+)+select|information_schema|sleep\\(\\d|benchmark\\(|' or '1'='1)",
+    "flags": "i",
+    "severity": "high",
+    "summary": { "tr": "URL üzerinden SQL injection denemesi", "en": "SQL injection attempt via URL" },
+    "threshold": 1,
+    "windowSec": 60
+  },
+  {
+    "id": "nginx-scanner-ua",
+    "origin": "nginx",
+    "match": "(sqlmap|nikto|nmap|masscan|acunetix|nuclei|WPScan|dirbuster|gobuster)",
+    "flags": "i",
+    "severity": "medium",
+    "summary": { "tr": "Bilinen tarayıcı aracı imzası (User-Agent)", "en": "Known scanner tool signature (User-Agent)" },
+    "threshold": 1,
+    "windowSec": 60
+  },
+  {
+    "id": "nginx-flood",
+    "origin": "nginx",
+    "match": "\" (200|301|302|404) ",
+    "severity": "medium",
+    "summary": { "tr": "Tek IP'den istek seli", "en": "Request flood from single IP" },
+    "threshold": 200,
+    "windowSec": 10
+  }
+]
