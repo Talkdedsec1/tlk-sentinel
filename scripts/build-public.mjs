@@ -48,7 +48,6 @@ const include = [
   "SECURITY.md",
   "docs",
   ".env.example",
-  ".gitignore",
 ];
 
 const stage = resolve(root, ".dist-public-stage");
@@ -97,6 +96,8 @@ if (leakHits.length || bad || structural.length) {
   for (const h of leakHits) console.error("  secret:", h);
   process.exit(1);
 }
+
+await cp(resolve(root, "packaging/gitignore.public"), resolve(stage, ".gitignore"));
 
 await writeFile(
   resolve(stage, "BUILD-INFO.txt"),
