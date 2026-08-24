@@ -1,0 +1,58 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag to package
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      - run: npm install
+
+      - name: The suite has to pass before anything is published
+        run: npm test
+
+      - name: README test count still matches the suite
+        run: node scripts/check-test-count.mjs
+
+      - name: The community build is still monitor-only
+        run: node scripts/build-public.mjs
+
+      - name: Package
+        id: pack
+        run: |
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          NAME="tlk-sentinel-${TAG}"
+          mkdir -p "out/${NAME}"
+          rsync -a --exclude .git --exclude node_modules --exclude dist-public \
+                --exclude 'packages/*/dist' --exclude '*.tsbuildinfo' \
+                ./ "out/${NAME}/"
+          tar -C out -czf "${NAME}.tar.gz" "${NAME}"
+          sha256sum "${NAME}.tar.gz" > "${NAME}.tar.gz.sha256"
+          cat "${NAME}.tar.gz.sha256"
+          echo "name=${NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Attach to the release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+          files: |
+            ${{ steps.pack.outputs.name }}.tar.gz
+            ${{ steps.pack.outputs.name }}.tar.gz.sha256

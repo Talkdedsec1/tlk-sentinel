@@ -198,7 +198,12 @@ rules/public     shipped rules (ssh, nginx, web)
 profiles/        behaviour profiles
 tests/           60 tests, no framework
 scripts/         community build with leak and structural checks
+docs/            architecture and threat model
 ```
+
+[`docs/architecture.md`](docs/architecture.md) traces one log line from the file to the firewall.
+[`docs/threat-model.md`](docs/threat-model.md) is the one to read before deploying it: what it does
+not catch, and the four ways the tool itself can be turned against you.
 
 ## License
 
@@ -297,6 +302,13 @@ deposu, uyarı gövdeleri, firewall girdi doğrulaması ve config varsayılanlar
 gerçek ajanı ayağa kaldırıp panel API'sine karşı doğrulama yapan entegrasyon testi;
 ikisi de imzası bozulmuş bir build'in **ban uygulamayı reddettiğini** doğruluyor. CI
 Linux ve Windows'ta, Node 22 ve 24 ile çalışıyor.
+
+### Belgeler
+
+[`docs/architecture.md`](docs/architecture.md) tek bir log satırını dosyadan güvenlik
+duvarına kadar takip ediyor. [`docs/threat-model.md`](docs/threat-model.md) ise kurmadan
+önce okunması gereken: neyi yakalamadığı ve aracın kendisinin sana karşı nasıl
+kullanılabileceği.
 
 ### Lisans
 

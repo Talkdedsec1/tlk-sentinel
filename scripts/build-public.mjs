@@ -46,6 +46,7 @@ const include = [
   "LICENSE",
   "README.md",
   "SECURITY.md",
+  "docs",
   ".env.example",
   ".gitignore",
 ];
