@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.1.0 — 2026-08-24
+
+No change to detection or response. Everything here is about being able to check the
+claims rather than take them on trust.
+
+- `docs/architecture.md` follows one log line from the file through the engine to the
+  firewall, including why the community build cannot ban even with the profile edited.
+- `docs/threat-model.md` states what it does not catch — distributed low-and-slow
+  traffic and IPv6 rotation walk past it — and the four ways the tool can be turned
+  against you: a spoofed proxy header, log injection, locking yourself out, and a
+  poisoned reputation feed.
+- `SECURITY.md` with a disclosure address, scope and response window. The issue chooser
+  points at it before anyone reaches a text field.
+- A licence permission table in the README, in both languages, matching clauses 1 and 2
+  of `LICENSE`.
+- Releases now carry a tarball and its SHA-256. The workflow refuses to publish unless
+  the suite passes, the README's test count still matches it, and the public build comes
+  out monitor-only.
+- CI fails if any of the four places the README claims a test count drifts from the
+  suite.
+- Dependabot on the dev dependencies and the workflow actions.
+
 ## 1.0.0 — 2026-08-23
 
 First public release of the community build.
