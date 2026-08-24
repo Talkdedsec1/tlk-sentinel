@@ -30,5 +30,8 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: README test count still matches the suite
+        run: node scripts/check-test-count.mjs
+
       - name: Verify the community build stays clean
         run: node scripts/build-public.mjs

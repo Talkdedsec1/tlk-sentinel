@@ -37,6 +37,7 @@ const include = [
   "data/reputation",
   "tests",
   "scripts/build-public.mjs",
+  "scripts/check-test-count.mjs",
   "CHANGELOG.md",
   "deploy",
   "assets",
@@ -44,6 +45,7 @@ const include = [
   "package.json",
   "LICENSE",
   "README.md",
+  "SECURITY.md",
   ".env.example",
   ".gitignore",
 ];

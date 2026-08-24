@@ -15,6 +15,12 @@
   <sub>SSH · nginx · Next.js middleware · offline reputation · behavioural scoring · live dashboard</sub>
 </p>
 
+<p align="center">
+  <sub><b>This is the community build.</b> It runs the <code>public</code> profile: it watches, scores
+  and reports, and it never bans. The firewall responder also starts in dry-run, so a fresh clone
+  touches nothing on your host until you turn both on deliberately.</sub>
+</p>
+
 ---
 
 ## Why
@@ -196,9 +202,22 @@ scripts/         community build with leak and structural checks
 
 ## License
 
-Source-available, see [LICENSE](LICENSE). **You may run it, read it and modify it for
-your own use. You may not sell it or redistribute it.** Commercial licensing:
-talkdedsec@proton.me
+Source-available, see [LICENSE](LICENSE). The short version:
+
+| | |
+|:--|:--|
+| Run it on your own machines, including your company's | yes |
+| Run it commercially for your own business | yes |
+| Read and modify the source for your own installation | yes |
+| Send me a patch or a vulnerability report with code in it | yes |
+| Redistribute it, publish it or mirror it | no |
+| Sell it, rent it, or ship it inside a paid product | no |
+| Host it as a service for someone else | no |
+| Strip the attribution or the licence text | no |
+
+The table is a summary; [LICENSE](LICENSE) is what governs, and its English text is
+authoritative over the Turkish translation inside it. Anything in the "no" column can be
+bought: talkdedsec@proton.me
 
 Made by [talkdedsec](https://github.com/Talkdedsec1). The attribution is signed with
 Ed25519 and verified at runtime — a build that strips it disables its own enforcement.
@@ -207,6 +226,10 @@ Ed25519 and verified at runtime — a build that strips it disables its own enfo
 
 <details>
 <summary><b>Türkçe</b></summary>
+
+**Bu depo topluluk sürümü.** `public` profiliyle çalışıyor: izler, puanlar, raporlar —
+ban atmaz. Güvenlik duvarı yanıtlayıcısı da dry-run başlıyor, yani taze bir klon sen
+ikisini de bilerek açana kadar sunucunda hiçbir şeye dokunmuyor.
 
 ### Neden
 
@@ -277,9 +300,21 @@ Linux ve Windows'ta, Node 22 ve 24 ile çalışıyor.
 
 ### Lisans
 
-Kaynak-erişilebilir ([LICENSE](LICENSE)): **çalıştırabilir, okuyabilir, kendi kullanımın
-için değiştirebilirsin; satamaz ve yeniden dağıtamazsın.** Ticari lisans:
-talkdedsec@proton.me
+Kaynak-erişilebilir ([LICENSE](LICENSE)). Kısa hâli:
+
+| | |
+|:--|:--|
+| Kendi makinelerinde çalıştırmak, şirketinin makineleri dahil | evet |
+| Kendi işin için ticari olarak çalıştırmak | evet |
+| Kendi kurulumun için kaynağı okumak ve değiştirmek | evet |
+| Yama ya da içinde kod olan bir güvenlik bildirimi göndermek | evet |
+| Yeniden dağıtmak, yayınlamak, aynalamak | hayır |
+| Satmak, kiralamak, ücretli bir ürünün içinde vermek | hayır |
+| Başkası için servis olarak barındırmak | hayır |
+| Marka atfını ya da lisans metnini sökmek | hayır |
+
+Tablo özet; bağlayıcı olan [LICENSE](LICENSE) ve içindeki İngilizce metin Türkçe
+çevirinin üstünde. "Hayır" sütunundaki her şey satın alınabilir: talkdedsec@proton.me
 
 Marka Ed25519 ile imzalı ve çalışma anında doğrulanıyor — imzayı söken bir build kendi
 zorlama yeteneğini kapatır.
