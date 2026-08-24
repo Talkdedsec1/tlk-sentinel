@@ -26,6 +26,9 @@ jobs:
 
       - run: npm install
 
+      - name: Typecheck and build
+        run: npm run build
+
       - name: The suite has to pass before anything is published
         run: npm test
 
