@@ -38,6 +38,7 @@ const include = [
   "tests",
   "scripts/build-public.mjs",
   "scripts/check-test-count.mjs",
+  "packaging/gitignore.public",
   "CHANGELOG.md",
   "deploy",
   "assets",
