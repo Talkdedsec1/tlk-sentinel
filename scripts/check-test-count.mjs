@@ -5,17 +5,18 @@ import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
-const output = execFileSync(
-  process.execPath,
-  ["--disable-warning=ExperimentalWarning", "--test", "tests/*.test.mjs"],
-  {
-    cwd: root,
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "pipe"],
-  },
-);
+let output;
+try {
+  output = execFileSync(
+    process.execPath,
+    ["--disable-warning=ExperimentalWarning", "--test", "--test-reporter=tap", "tests/*.test.mjs"],
+    { cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+  );
+} catch (err) {
+  output = err.stdout ?? "";
+}
 
-const actual = Number(output.match(/^ℹ tests (\d+)$/m)?.[1]);
+const actual = Number(output.match(/^# tests (\d+)$/m)?.[1]);
 if (!actual) {
   console.error("could not read the test count out of the runner output");
   process.exit(1);
