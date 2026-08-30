@@ -5,7 +5,7 @@
   "description": "Server and application security engine: log-driven detection, IP banning, reputation and anomaly scoring, live panel",
   "license": "SEE LICENSE IN LICENSE",
   "author": "talkdedsec <talkdedsec@proton.me>",
-  "repository": { "type": "git", "url": "git+https://github.com/Talkdedsec1/tlk-sentinel.git" },
+  "repository": { "type": "git", "url": "git+https://github.com/Talkdedsec/tlk-sentinel.git" },
   "engines": { "node": ">=22.5" },
   "workspaces": [
     "packages/core",

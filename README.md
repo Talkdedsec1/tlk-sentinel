@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Talkdedsec1/tlk-sentinel/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/Talkdedsec1/tlk-sentinel/ci.yml?branch=main&style=flat-square&labelColor=0d1220&color=3ddc97"></a>
+  <a href="https://github.com/Talkdedsec/tlk-sentinel/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/Talkdedsec/tlk-sentinel/ci.yml?branch=main&style=flat-square&labelColor=0d1220&color=3ddc97"></a>
   <img alt="tests" src="https://img.shields.io/badge/tests-60%20passing-3ddc97?style=flat-square&labelColor=0d1220">
   <img alt="dependencies" src="https://img.shields.io/badge/runtime%20deps-0-5b8cff?style=flat-square&labelColor=0d1220">
   <img alt="node" src="https://img.shields.io/badge/node-%E2%89%A522.5-5b8cff?style=flat-square&labelColor=0d1220">
@@ -66,7 +66,7 @@ its plain form. There are regression tests for each of those encodings.
 Requires Node 22.5+ (for the built-in SQLite). No other runtime dependency.
 
 ```bash
-git clone https://github.com/Talkdedsec1/tlk-sentinel /opt/tlk-sentinel
+git clone https://github.com/Talkdedsec/tlk-sentinel /opt/tlk-sentinel
 cd /opt/tlk-sentinel
 npm install
 npm run build
@@ -224,7 +224,7 @@ The table is a summary; [LICENSE](LICENSE) is what governs, and its English text
 authoritative over the Turkish translation inside it. Anything in the "no" column can be
 bought: talkdedsec@proton.me
 
-Made by [talkdedsec](https://github.com/Talkdedsec1). The attribution is signed with
+Made by [talkdedsec](https://github.com/Talkdedsec). The attribution is signed with
 Ed25519 and verified at runtime — a build that strips it disables its own enforcement.
 
 ---
@@ -266,7 +266,7 @@ Her kodlama için regresyon testi var.
 Node 22.5+ gerekiyor (yerleşik SQLite için), başka çalışma zamanı bağımlılığı yok.
 
 ```bash
-git clone https://github.com/Talkdedsec1/tlk-sentinel /opt/tlk-sentinel
+git clone https://github.com/Talkdedsec/tlk-sentinel /opt/tlk-sentinel
 cd /opt/tlk-sentinel && npm install && npm run build
 cp .env.example .env && npm run agent
 ```
