@@ -11,6 +11,8 @@ on:
 
 permissions:
   contents: write
+  id-token: write
+  attestations: write
 
 jobs:
   package:
@@ -51,6 +53,11 @@ jobs:
           sha256sum "${NAME}.tar.gz" > "${NAME}.tar.gz.sha256"
           cat "${NAME}.tar.gz.sha256"
           echo "name=${NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Provenance for the tarball
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: ${{ steps.pack.outputs.name }}.tar.gz
 
       - name: Attach to the release
         uses: softprops/action-gh-release@v2

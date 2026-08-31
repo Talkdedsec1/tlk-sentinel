@@ -1,0 +1,66 @@
+name: Bug report
+description: A detection, a ban or the panel behaves differently than documented
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A detection bug is only reproducible with the log line that caused it. Paste the raw
+        line, not a description of it, and redact the source IP if you would rather not
+        publish it — `203.0.113.7` reads the same to us.
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you expected the agent to do, and what it did instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: line
+    attributes:
+      label: The log line involved
+      description: The raw line the rule did or did not match.
+      render: text
+
+  - type: input
+    id: rule
+    attributes:
+      label: Which rule
+      description: The rule id from `rules/`, if you know it.
+      placeholder: ssh-bruteforce
+
+  - type: dropdown
+    id: profile
+    attributes:
+      label: Which profile is running
+      options:
+        - self
+        - public
+        - a profile of my own
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: v1.1.0
+    validations:
+      required: true
+
+  - type: input
+    id: platform
+    attributes:
+      label: OS and Node version
+      placeholder: Debian 13, Node 22.14
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Agent output
+      description: The relevant lines from the agent's own log, if there are any.
+      render: text
